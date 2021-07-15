@@ -66,10 +66,10 @@ export default defineComponent({
   methods: {
     add() {
       store.dispatch("add", {
-        name: "Placement",
-        savings: 1000,
+        name: "Savings",
+        savings: 100,
         roi: 10,
-        initial: 0,
+        initial: 1000,
       });
     },
   },

@@ -26,7 +26,7 @@
           <div class="p-4 md:w-1/2 sm:w-1/1 w-full">
             <div class="relative border-2 border-gray-200 px-4 py-6 rounded-lg">
               <svg
-                @click="isEditMode = !isEditMode"
+                @click="edit()"
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6 absolute top-2 right-2"
                 v-bind:class="[isEditMode ? 'text-green-400' : 'text-gray-300']"
@@ -96,7 +96,7 @@
                 />
               </h2>
               <p class="leading-relaxed">
-                Total savings neede following the 4% rules
+                Total savings needed following the 4% rules
               </p>
             </div>
           </div>
@@ -240,6 +240,7 @@ import { defineComponent } from "vue";
 import IncomeSourceListComponent from "./components/IncomeSourceListComponent.vue";
 import currencyAmountComponent from "./components/common/currencyAmountComponent.vue";
 
+
 import { useStore } from "vuex";
 
 let store;
@@ -251,10 +252,8 @@ export default defineComponent({
   },
   data() {
     return {
-      targetRent: 5000,
       targetYear: 0,
-      interestRate: 10,
-      monthlySaving: 750,
+      targetRent: 0,
       plan: [],
       ans: 0,
       isEditMode: false,
@@ -267,13 +266,26 @@ export default defineComponent({
    if (localStorage.getItem('sources')) {
       try {
         const sources = JSON.parse(localStorage.getItem('sources'));
-        store.dispatch('set',sources )
+        store.dispatch('set', sources);
       } catch(e) {
         localStorage.removeItem('sources');
       }
     }
+    if (localStorage.getItem('targetRent')) {
+      try {
+        this.targetRent = localStorage.getItem('targetRent');
+      } catch(e) {
+        localStorage.removeItem('targetRent');
+      }
+    }
   },
   methods: {
+    edit(){
+      this.isEditMode = !this.isEditMode;
+      if(!this.isEditMode){
+        localStorage.setItem('targetRent', this.targetRent);
+      }
+    },
     calculate(index, savings, roi, initial = 0) {
       let interestRate = 0;
       if (this.isInflationAdjusted) {

@@ -11,7 +11,7 @@ export default defineComponent({
   name: "currencyAmount",
   props: ['amount','recurring'],
   computed: {
-    amountFormated() {
+    amountFormated(): string {
       var formatter = new Intl.NumberFormat("fr-FR", {
         style: "currency",
         currency: "EUR",
