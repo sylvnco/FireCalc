@@ -239,16 +239,18 @@
 import { defineComponent } from "vue";
 import IncomeSourceListComponent from "./components/IncomeSourceListComponent.vue";
 import currencyAmountComponent from "./components/common/currencyAmountComponent.vue";
-
+import {IApp} from "../src/interfaces/IApp"
 
 import { useStore } from "vuex";
+import { IStore, key } from './../store/store'
+import { IIncomeSource } from "./interfaces/IIncomeSource";
 
-let store;
+let store: IStore;
 
 export default defineComponent({
   name: "App",
   setup() {
-    store = useStore();
+    store = useStore(key);
   },
   data() {
     return {
@@ -260,33 +262,36 @@ export default defineComponent({
       inflation: 2,
       isInflationAdjusted: true,
       editInflation: false,
-    };
+    } as IApp;
   },
   mounted() {
    if (localStorage.getItem('sources')) {
       try {
-        const sources = JSON.parse(localStorage.getItem('sources'));
+        const local: any = localStorage.getItem('sources');
+        const sources: JSON = JSON.parse(local);
+        //@ts-ignore
         store.dispatch('set', sources);
       } catch(e) {
         localStorage.removeItem('sources');
       }
     }
-    if (localStorage.getItem('targetRent')) {
+    const targetRent: number = Number(localStorage.getItem('targetRent'));
+    if (targetRent) {
       try {
-        this.targetRent = localStorage.getItem('targetRent');
-      } catch(e) {
+        this.targetRent = targetRent;
+      } catch(e: any) {
         localStorage.removeItem('targetRent');
       }
     }
   },
   methods: {
-    edit(){
+    edit(): void{
       this.isEditMode = !this.isEditMode;
       if(!this.isEditMode){
-        localStorage.setItem('targetRent', this.targetRent);
+        localStorage.setItem('targetRent', this.targetRent.toString());
       }
     },
-    calculate(index, savings, roi, initial = 0) {
+    calculate(index: number, savings: number, roi: number, initial: number = 0) : number {
       let interestRate = 0;
       if (this.isInflationAdjusted) {
         interestRate = (1 + roi / 100) / (1 + this.inflation / 100) - 1;
@@ -302,18 +307,19 @@ export default defineComponent({
       const resContribution = (PMT * a) / interestRate;
       return resInitial + resContribution;
     },
-    calculateUntilYears(years) {
-      let sum = 0;
+    //@ts-ignore
+    calculateUntilYears(): void {
+      let sum: number = 0;
       this.plan = [];
 
-      for (let i = 0; i <= 99; i++) {
-        const values = store.state.sources.map((source) => {
+      for (let i: number = 0; i <= 99; i++) {
+        const values = store.state.sources.map((source: IIncomeSource) => {
           const tempSum = Math.round(
             this.calculate(i, source.savings, source.roi, source.initial)
           );
           return tempSum;
         });
-        sum = values.reduce((acc, val) => {
+        sum = values.reduce((acc: number, val: number) => {
           return acc + val;
         });
 
@@ -331,19 +337,19 @@ export default defineComponent({
     
   },
   computed: {
-    getTargetPatrimony() {
+    getTargetPatrimony(): number {
       return this.targetRent * 12 * 25;
     },
-    getInflationRateLabel() {
+    getInflationRateLabel(): string {
       return `${this.inflation} %`;
     },
-    getCompoundInterestRateFormula() {
-      // a = P(1 + r/n)^nt + (PMT(1+r/n)^nt - 1) / (r/n)
-      // https://www.bizskinny.com/Finance/Compound-Interest/compound-interest-with-monthly-contributions.php
-      const PMT = this.monthlySaving * 12;
-      const a = Math.pow(1 + this.interestRate, 10) - 1;
-      return (PMT * a) / this.interestRate;
-    },
+    // getCompoundInterestRateFormula(): number {
+    //   // a = P(1 + r/n)^nt + (PMT(1+r/n)^nt - 1) / (r/n)
+    //   // https://www.bizskinny.com/Finance/Compound-Interest/compound-interest-with-monthly-contributions.php
+    //   const PMT = this.monthlySaving * 12;
+    //   const a = Math.pow(1 + this.interestRate, 10) - 1;
+    //   return (PMT * a) / this.interestRate;
+    // },
   },
   components: { IncomeSourceListComponent, currencyAmountComponent },
 });

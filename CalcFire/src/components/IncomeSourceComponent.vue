@@ -87,9 +87,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import currencyAmountComponent from "./common/currencyAmountComponent.vue";
+import { IStore, key } from './../../store/store'
+
 
 import { useStore } from "vuex";
-let store;
+let store: IStore;
 export default defineComponent({
   name: "IncomeSource",
   props: {
@@ -97,15 +99,18 @@ export default defineComponent({
     index: { type: Number },
   },
   setup() {
-    store = useStore();
+    store = useStore(key);
   },
   data() {
     return {
       isEditMode: false,
+      source: {ype: Object},
+      index: {type: Number}
     };
   },
   methods: {
     remove() {
+        //@ts-ignore
       store.dispatch("remove", this.index);
     },
     edit() {

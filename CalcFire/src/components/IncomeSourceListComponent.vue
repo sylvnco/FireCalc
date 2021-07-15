@@ -52,11 +52,13 @@
 import { defineComponent } from "vue";
 import { useStore } from "vuex";
 import IncomeSourceComponent from "./IncomeSourceComponent.vue";
-let store;
+import { IStore, key } from './../../store/store'
+
+let store: IStore;
 export default defineComponent({
   name: "IncomeSourceList",
   setup() {
-    store = useStore();
+    store = useStore(key);
   },
   data() {
     return {
@@ -65,6 +67,7 @@ export default defineComponent({
   },
   methods: {
     add() {
+        //@ts-ignore
       store.dispatch("add", {
         name: "Savings",
         savings: 100,
@@ -75,6 +78,7 @@ export default defineComponent({
   },
   computed: {
     sources() {
+        //@ts-ignore
       return store.state.sources;
     },
   },

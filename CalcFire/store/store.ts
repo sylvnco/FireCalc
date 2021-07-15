@@ -1,6 +1,19 @@
-import { createStore } from 'vuex'
+import { createStore , Store} from 'vuex'
+import { InjectionKey } from 'vue'
+import { IIncomeSource } from '../src/interfaces/IIncomeSource'
 
-const store = createStore({
+export interface IStore {
+  state: IState;
+}
+
+export interface IState {
+  sources: IIncomeSource[]
+} 
+
+export const key: InjectionKey<Store<IState>> = Symbol()
+
+
+export const store = createStore({
     state () {
       return {
         sources: [{
@@ -18,13 +31,13 @@ const store = createStore({
       }
     },
     mutations: {
-        add(state, source){
+        add(state: IState, source: IIncomeSource){
             state.sources.push(source)
         },
-        remove(state, index){
+        remove(state: IState, index: number){
             state.sources.splice(index,1);
         },
-        set(state, payload){
+        set(state: IState, payload: IIncomeSource[]){
           state.sources = payload;
         },
     },

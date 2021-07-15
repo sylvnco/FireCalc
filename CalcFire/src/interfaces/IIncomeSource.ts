@@ -1,10 +1,3 @@
-export interface IStore {
-    state: IState;
-}
-
-export interface IState {
-    sources: IIncomeSource[]
-} 
 
 export interface IIncomeSource {
     name: string,
