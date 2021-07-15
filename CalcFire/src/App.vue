@@ -254,8 +254,8 @@ export default defineComponent({
   },
   data() {
     return {
-      targetYear: 2000,
-      targetRent: 0,
+      targetYear: 0,
+      targetRent: 2000,
       plan: [],
       ans: 0,
       isEditMode: false,
