@@ -104,8 +104,6 @@ export default defineComponent({
   data() {
     return {
       isEditMode: false,
-      source: {ype: Object},
-      index: {type: Number}
     };
   },
   methods: {
