@@ -17,8 +17,9 @@
           </h1>
           <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
             ...depending on
-            <b class="text-green-500">how much do you need to live</b> and all the <b class="text-green-500">contribution</b> you
-            make <b class="text-green-500">each month</b> to your investment
+            <b class="text-green-500">how much do you need to live</b> and all
+            the <b class="text-green-500">contribution</b> you make
+            <b class="text-green-500">each month</b> to your investment
           </p>
         </div>
         <div class="flex flex-wrap -m-4 text-center">
@@ -74,7 +75,7 @@
             </div>
           </div>
           <div class="p-4 md:w-1/2 sm:w-1/1 w-full">
-            <div class="border-2 border-gray-200 px-4 py-6 rounded-lg">
+            <div class="border-2 border-gray-200 px-4 py-6 rounded-lg relative">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -95,7 +96,28 @@
                 />
               </h2>
               <p class="leading-relaxed">
-                Total savings needed following the 4% rules
+                Total savings needed following a
+                <span v-if="!isEditSwrMode">{{ swr }}</span>
+                <input class="bg-green-100 w-4" v-else v-model="swr" />
+                % safe withdrawal rate
+                <svg
+                  @click="editSwr()"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 absolute top-2 right-2"
+                  v-bind:class="[
+                    isEditSwrMode ? 'text-green-400' : 'text-gray-300',
+                  ]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
               </p>
             </div>
           </div>
@@ -238,10 +260,10 @@
 import { defineComponent } from "vue";
 import IncomeSourceListComponent from "./components/IncomeSourceListComponent.vue";
 import currencyAmountComponent from "./components/common/currencyAmountComponent.vue";
-import {IApp} from "../src/interfaces/IApp"
+import { IApp } from "../src/interfaces/IApp";
 
 import { useStore } from "vuex";
-import { IStore, key } from './../store/store'
+import { IStore, key } from "./../store/store";
 import { IIncomeSource } from "./interfaces/IIncomeSource";
 
 let store: IStore;
@@ -261,36 +283,57 @@ export default defineComponent({
       inflation: 2,
       isInflationAdjusted: true,
       editInflation: false,
+      isEditSwrMode: false,
+      swr: 4,
     } as IApp;
   },
   mounted() {
-   if (localStorage.getItem('sources')) {
+    if (localStorage.getItem("sources")) {
       try {
-        const local: any = localStorage.getItem('sources');
+        const local: any = localStorage.getItem("sources");
         const sources: JSON = JSON.parse(local);
         //@ts-ignore
-        store.dispatch('set', sources);
-      } catch(e) {
-        localStorage.removeItem('sources');
+        store.dispatch("set", sources);
+      } catch (e) {
+        localStorage.removeItem("sources");
       }
     }
-    const targetRent: number = Number(localStorage.getItem('targetRent'));
+    const targetRent: number = Number(localStorage.getItem("targetRent"));
     if (targetRent) {
       try {
         this.targetRent = targetRent;
-      } catch(e: any) {
-        localStorage.removeItem('targetRent');
+      } catch (e: any) {
+        localStorage.removeItem("targetRent");
+      }
+    }
+    const swr: number = Number(localStorage.getItem("swr"));
+    if (swr) {
+      try {
+        this.swr = swr;
+      } catch (e: any) {
+        localStorage.removeItem("swr");
       }
     }
   },
   methods: {
-    edit(): void{
+    edit(): void {
       this.isEditMode = !this.isEditMode;
-      if(!this.isEditMode){
-        localStorage.setItem('targetRent', this.targetRent.toString());
+      if (!this.isEditMode) {
+        localStorage.setItem("targetRent", this.targetRent.toString());
       }
     },
-    calculate(index: number, savings: number, roi: number, initial: number = 0) : number {
+    editSwr(): void {
+      this.isEditSwrMode = !this.isEditSwrMode;
+      if (!this.isEditSwrMode) {
+        localStorage.setItem("swr", this.swr.toString());
+      }
+    },
+    calculate(
+      index: number,
+      savings: number,
+      roi: number,
+      initial: number = 0
+    ): number {
       let interestRate = 0;
       if (this.isInflationAdjusted) {
         interestRate = (1 + roi / 100) / (1 + this.inflation / 100) - 1;
@@ -333,11 +376,13 @@ export default defineComponent({
         }
       }
     },
-    
   },
   computed: {
     getTargetPatrimony(): number {
-      return this.targetRent * 12 * 25;
+      const v = this.swr === 0 ? 1 : this.swr;
+      const r = Math.round(100 / v);
+
+      return this.targetRent * 12 * r;
     },
     getInflationRateLabel(): string {
       return `${this.inflation} %`;

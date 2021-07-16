@@ -6,5 +6,7 @@ export interface IApp {
     isEditMode: boolean,
     inflation: number,
     isInflationAdjusted: boolean,
-    editInflation: boolean,   
+    editInflation: boolean,
+    isEditSwrMode: boolean,
+    swr: number,
 }
