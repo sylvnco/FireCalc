@@ -17,8 +17,7 @@
           </h1>
           <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
             ...depending on
-            <b class="text-green-500">how much do you need to live</b> you plan
-            to have and all the <b class="text-green-500">contribution</b> you
+            <b class="text-green-500">how much do you need to live</b> and all the <b class="text-green-500">contribution</b> you
             make <b class="text-green-500">each month</b> to your investment
           </p>
         </div>
