@@ -296,11 +296,17 @@ export default defineComponent({
     } as IApp;
   },
   mounted() {
-    if(this.$route && this.$route.query && this.$route.query.plan){
-       let base64ToString = Buffer.from(this.$route.query.plan, "base64").toString();
+    let uri = window.location.search.substring(1); 
+    let params = new URLSearchParams(uri);
+    const p = params.get("plan");
+    if(p){
+       let base64ToString = Buffer.from(p, "base64").toString();
       base64ToString = JSON.parse(base64ToString);
-    }
-    if (localStorage.getItem("sources")) {
+      console.log(base64ToString)
+        //@ts-ignore
+        store.dispatch("set", base64ToString);
+    }else {
+if (localStorage.getItem("sources")) {
       try {
         const local: any = localStorage.getItem("sources");
         const sources: JSON = JSON.parse(local);
@@ -326,6 +332,8 @@ export default defineComponent({
         localStorage.removeItem("swr");
       }
     }
+    }
+    
   },
   methods: {
     edit(): void {
