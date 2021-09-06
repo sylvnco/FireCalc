@@ -37,9 +37,9 @@ export default defineComponent({
     const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json"},
-    body: JSON.stringify({ email: this.email })
+    body: JSON.stringify({ email: this.email, GroupeId: 108014935 })
   };
-  fetch("http://localhost:3080/api/mail", requestOptions)
+  fetch("https://www.dotnethero.fr/api/mail", requestOptions)
     .then((response) => {
         if(response){
             that.show = true;
