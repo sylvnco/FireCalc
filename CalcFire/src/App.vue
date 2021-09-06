@@ -142,7 +142,7 @@
         <p class="my-4" v-if="isInflationAdjusted">
           <span
             v-if="!editInflation"
-            @click="editInflation = !editInflation"
+            @click="editInf"
             class="font-bold text-green-400 inline align-middle"
             >{{ getInflationRateLabel }}
           </span>
@@ -151,10 +151,10 @@
             v-if="editInflation"
             type="number"
             v-model="inflation"
-            @blur="editInflation = !editInflation"
+            @blur="editInf"
           />
           <svg
-            @click="editInflation = !editInflation"
+            @click="editInf"
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6 relative inline"
             v-bind:class="[editInflation ? 'text-green-400' : 'text-gray-300']"
@@ -255,7 +255,7 @@
       </div>
     </div>
     <share-component />
-    <email-component />
+    <!-- <email-component /> -->
     <footer-component />
   </div>
 </template>
@@ -299,12 +299,20 @@ export default defineComponent({
     let uri = window.location.search.substring(1); 
     let params = new URLSearchParams(uri);
     const p = params.get("plan");
+    console.log(p)
     if(p){
        let base64ToString = Buffer.from(p, "base64").toString();
       base64ToString = JSON.parse(base64ToString);
-      console.log(base64ToString)
+    console.log(base64ToString)
+
         //@ts-ignore
-        store.dispatch("set", base64ToString);
+        store.dispatch("set", base64ToString.sources);
+        //@ts-ignore
+        store.dispatch("setInflation", base64ToString.inflation);
+        //@ts-ignore
+        store.dispatch("setSwr", base64ToString.swr);
+        //@ts-ignore
+        store.dispatch("setTargetRent", base64ToString.targetRent);
     }else {
 if (localStorage.getItem("sources")) {
       try {
@@ -339,13 +347,26 @@ if (localStorage.getItem("sources")) {
     edit(): void {
       this.isEditMode = !this.isEditMode;
       if (!this.isEditMode) {
-        localStorage.setItem("targetRent", this.targetRent.toString());
+        //@ts-ignore
+        store.dispatch("setTargetRent", Number(this.targetRent));
+        localStorage.setItem("targetRent",  this.targetRent);
       }
     },
     editSwr(): void {
       this.isEditSwrMode = !this.isEditSwrMode;
       if (!this.isEditSwrMode) {
-        localStorage.setItem("swr", this.swr.toString());
+        //@ts-ignore
+        store.dispatch("setSwr", Number(this.swr));
+        localStorage.setItem("swr", this.swr);
+      }
+    },
+     editInf(): void {
+      this.editInflation = !this.editInflation;
+      if (!this.editInflation) {
+        console.log(this.inflation);
+        //@ts-ignore
+        store.dispatch("setInflation", Number(this.inflation));
+        localStorage.setItem("setInflation", this.inflation);
       }
     },
     calculate(
@@ -399,6 +420,15 @@ if (localStorage.getItem("sources")) {
     },
   },
   computed: {
+    //  targetRent() {
+    //   return store.state.targetRent;
+    // },
+    // swr() {
+    //   return store.state.swr;
+    // },
+    // inflation() {
+    //   return store.state.inflation;
+    // },
     getTargetPatrimony(): number {
       const v = this.swr === 0 ? 1 : this.swr;
       const r = Math.round(100 / v);

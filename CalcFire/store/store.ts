@@ -7,6 +7,9 @@ export interface IStore {
 }
 
 export interface IState {
+  targetRent: number,
+  swr: number,
+  inflation: number,
   sources: IIncomeSource[]
 } 
 
@@ -16,6 +19,9 @@ export const key: InjectionKey<Store<IState>> = Symbol()
 export const store = createStore({
     state () {
       return {
+        targetRent: 2000,
+        inflation: 2,
+        swr: 4,
         sources: [{
             name: "Savings Account #1",
             savings: 200,
@@ -40,6 +46,15 @@ export const store = createStore({
         set(state: IState, payload: IIncomeSource[]){
           state.sources = payload;
         },
+        setSwr(state: IState, payload: number){
+          state.swr = payload;
+        },
+        setInflation(state: IState, payload: number){
+          state.inflation = payload;
+        },
+        setTargetRent(state: IState, payload: number){
+          state.targetRent = payload;
+        },
     },
     actions: {
         add({commit}, payload){
@@ -50,6 +65,15 @@ export const store = createStore({
         },
         set({commit}, payload) {
           commit('set', payload)
+        },
+        setSwr({commit}, payload) {
+          commit('setSwr', payload)
+        },
+        setInflation({commit}, payload) {
+          commit('setInflation', payload)
+        },
+        setTargetRent({commit}, payload) {
+          commit('setTargetRent', payload)
         },
     }
   })
