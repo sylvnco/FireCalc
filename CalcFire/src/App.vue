@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="text-gray-600 body-font">
-      <div class="container px-5 py-24 mx-auto">
+      <div class="container px-5 py-8 md:py-24 mx-auto">
         <div class="flex flex-col text-center w-full mb-20">
           <h1
             class="
@@ -172,9 +172,7 @@
         </p>
       </div>
 
-      <input
-        type="button"
-        value="Calculer"
+      <button
         class="
           flex
           mx-auto
@@ -190,7 +188,10 @@
           text-lg
         "
         @click="calculateUntilYears"
-      />
+      >Calculate</button>
+
+
+
       <div v-if="plan.length > 0">
         <p class="m-8">
           You will reach your target of
@@ -253,6 +254,9 @@
         </div>
       </div>
     </div>
+    <share-component />
+    <email-component />
+    <footer-component />
   </div>
 </template>
 
@@ -260,11 +264,15 @@
 import { defineComponent } from "vue";
 import IncomeSourceListComponent from "./components/IncomeSourceListComponent.vue";
 import currencyAmountComponent from "./components/common/currencyAmountComponent.vue";
+import ShareComponent from "./components/ShareComponent.vue";
+import footerComponent from "./Footer.vue"
+import emailComponent from './components/EmailComponent.vue';
 import { IApp } from "../src/interfaces/IApp";
 
 import { useStore } from "vuex";
 import { IStore, key } from "./../store/store";
 import { IIncomeSource } from "./interfaces/IIncomeSource";
+import { Buffer } from "buffer";
 
 let store: IStore;
 
@@ -288,6 +296,10 @@ export default defineComponent({
     } as IApp;
   },
   mounted() {
+    if(this.$route && this.$route.query && this.$route.query.plan){
+       let base64ToString = Buffer.from(this.$route.query.plan, "base64").toString();
+      base64ToString = JSON.parse(base64ToString);
+    }
     if (localStorage.getItem("sources")) {
       try {
         const local: any = localStorage.getItem("sources");
@@ -346,7 +358,8 @@ export default defineComponent({
       const resInitial = initial * Math.pow(1 + interestRate, index);
       //monthly contribution
       const a = Math.pow(1 + interestRate, index) - 1;
-      const resContribution = (PMT * a) / interestRate;
+      const minInterestRate = interestRate === 0 ? 0.01 : interestRate;
+      const resContribution = (PMT * a) / minInterestRate;
       return resInitial + resContribution;
     },
     //@ts-ignore
@@ -387,15 +400,8 @@ export default defineComponent({
     getInflationRateLabel(): string {
       return `${this.inflation} %`;
     },
-    // getCompoundInterestRateFormula(): number {
-    //   // a = P(1 + r/n)^nt + (PMT(1+r/n)^nt - 1) / (r/n)
-    //   // https://www.bizskinny.com/Finance/Compound-Interest/compound-interest-with-monthly-contributions.php
-    //   const PMT = this.monthlySaving * 12;
-    //   const a = Math.pow(1 + this.interestRate, 10) - 1;
-    //   return (PMT * a) / this.interestRate;
-    // },
   },
-  components: { IncomeSourceListComponent, currencyAmountComponent },
+  components: { IncomeSourceListComponent, currencyAmountComponent, footerComponent, ShareComponent, emailComponent },
 });
 </script>
 

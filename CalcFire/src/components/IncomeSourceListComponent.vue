@@ -12,6 +12,7 @@
         <p class="lg:w-1/2 w-full leading-relaxed text-gray-500">
           Add all your <b class="text-green-500">contribution</b> to the different investment you are <b class="text-green-500">planning</b> to have
         </p>
+        <p class="text-gray-400 text-sm font-semibold">(In case your are wondering, all the datas are saved locally on your browser, we respect your privacy.)</p>
       </div>
       <div class="flex flex-wrap -m-4">
         <income-source-component
