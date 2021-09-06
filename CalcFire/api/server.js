@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://fire-calc.vercel.app/');
 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
@@ -21,6 +21,9 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+  })
 
 app.post('/api/mail', (req, res) => {
     console.log(req.body);
