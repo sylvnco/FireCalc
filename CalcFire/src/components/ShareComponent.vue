@@ -44,7 +44,6 @@ export default defineComponent({
     buildUrl(): void {
       const self = this;
       const s = store.state;
-      console.log(s);
       let objJsonStr = JSON.stringify(s);
       let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
       let base64ToString = Buffer.from(objJsonB64, "base64").toString();

@@ -26,7 +26,7 @@
           <div class="p-4 md:w-1/2 sm:w-1/1 w-full">
             <div class="relative border-2 border-gray-200 px-4 py-6 rounded-lg">
               <svg
-                @click="edit()"
+                @click="isEditMode = !isEditMode"
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6 absolute top-2 right-2"
                 v-bind:class="[isEditMode ? 'text-green-400' : 'text-gray-300']"
@@ -67,7 +67,8 @@
                 <input
                   v-else
                   class="w-full bg-green-100"
-                  v-model="targetRent"
+                  :value="targetRent"
+                  @blur="edit"
                   type="number"
                 />
               </h2>
@@ -98,10 +99,10 @@
               <p class="leading-relaxed">
                 Total savings needed following a
                 <span v-if="!isEditSwrMode">{{ swr }}</span>
-                <input class="bg-green-100 w-4" v-else v-model="swr" />
+                <input class="bg-green-100 w-4" v-else :value="swr" @blur="editSwr" />
                 % safe withdrawal rate
                 <svg
-                  @click="editSwr()"
+                  @click="isEditSwrMode = !isEditSwrMode"
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6 absolute top-2 right-2"
                   v-bind:class="[
@@ -150,7 +151,7 @@
           <input
             v-if="editInflation"
             type="number"
-            v-model="inflation"
+            :value="inflation"
             @blur="editInf"
           />
           <svg
@@ -255,7 +256,7 @@
       </div>
     </div>
     <share-component />
-    <!-- <email-component /> -->
+    <email-component />
     <footer-component />
   </div>
 </template>
@@ -284,26 +285,21 @@ export default defineComponent({
   data() {
     return {
       targetYear: 0,
-      targetRent: 2000,
       plan: [],
       ans: 0,
       isEditMode: false,
-      inflation: 2,
       isInflationAdjusted: true,
       editInflation: false,
       isEditSwrMode: false,
-      swr: 4,
     } as IApp;
   },
   mounted() {
     let uri = window.location.search.substring(1); 
     let params = new URLSearchParams(uri);
     const p = params.get("plan");
-    console.log(p)
     if(p){
        let base64ToString = Buffer.from(p, "base64").toString();
       base64ToString = JSON.parse(base64ToString);
-    console.log(base64ToString)
 
         //@ts-ignore
         store.dispatch("set", base64ToString.sources);
@@ -327,7 +323,8 @@ if (localStorage.getItem("sources")) {
     const targetRent: number = Number(localStorage.getItem("targetRent"));
     if (targetRent) {
       try {
-        this.targetRent = targetRent;
+        //@ts-ignore
+        store.dispatch("setTargetRent", targetRent);
       } catch (e: any) {
         localStorage.removeItem("targetRent");
       }
@@ -335,7 +332,8 @@ if (localStorage.getItem("sources")) {
     const swr: number = Number(localStorage.getItem("swr"));
     if (swr) {
       try {
-        this.swr = swr;
+        //@ts-ignore
+        store.dispatch("setSwr", swr);
       } catch (e: any) {
         localStorage.removeItem("swr");
       }
@@ -344,29 +342,31 @@ if (localStorage.getItem("sources")) {
     
   },
   methods: {
-    edit(): void {
+    edit(e): void {
+      // if(e){
+        
+      // }
       this.isEditMode = !this.isEditMode;
       if (!this.isEditMode) {
         //@ts-ignore
-        store.dispatch("setTargetRent", Number(this.targetRent));
-        localStorage.setItem("targetRent",  this.targetRent);
+        store.dispatch("setTargetRent", e.target.value);
+        localStorage.setItem("targetRent",  e.target.value);
       }
     },
-    editSwr(): void {
+    editSwr(e): void {
       this.isEditSwrMode = !this.isEditSwrMode;
       if (!this.isEditSwrMode) {
         //@ts-ignore
-        store.dispatch("setSwr", Number(this.swr));
-        localStorage.setItem("swr", this.swr);
+        store.dispatch("setSwr", e.target.value);
+        localStorage.setItem("swr", e.target.value);
       }
     },
-     editInf(): void {
+     editInf(e): void {
       this.editInflation = !this.editInflation;
       if (!this.editInflation) {
-        console.log(this.inflation);
         //@ts-ignore
-        store.dispatch("setInflation", Number(this.inflation));
-        localStorage.setItem("setInflation", this.inflation);
+        store.dispatch("setInflation", e.target.value);
+        localStorage.setItem("inflation", e.target.value);
       }
     },
     calculate(
@@ -420,15 +420,15 @@ if (localStorage.getItem("sources")) {
     },
   },
   computed: {
-    //  targetRent() {
-    //   return store.state.targetRent;
-    // },
-    // swr() {
-    //   return store.state.swr;
-    // },
-    // inflation() {
-    //   return store.state.inflation;
-    // },
+     targetRent() {
+      return store.state.targetRent;
+    },
+    swr() {
+      return store.state.swr;
+    },
+    inflation() {
+      return store.state.inflation;
+    },
     getTargetPatrimony(): number {
       const v = this.swr === 0 ? 1 : this.swr;
       const r = Math.round(100 / v);

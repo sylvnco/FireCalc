@@ -37,9 +37,9 @@ export default defineComponent({
     const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json"},
-    body: JSON.stringify({ email: this.email, GroupeId: 108014935 })
+    body: JSON.stringify({ email: this.email })
   };
-  fetch("https://www.dotnethero.fr/api/mail", requestOptions)
+  fetch("/api", requestOptions)
     .then((response) => {
         if(response){
             that.show = true;
@@ -48,6 +48,15 @@ export default defineComponent({
             }, 2000);
         }
     })
+  // fetch("https://formspree.io/f/meqvvvnb", requestOptions)
+  //   .then((response) => {
+  //       if(response){
+  //           that.show = true;
+  //           setTimeout(() => {
+  //               that.show = false;
+  //           }, 2000);
+  //       }
+  //   })
     },
   },
 });
