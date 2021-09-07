@@ -343,9 +343,6 @@ if (localStorage.getItem("sources")) {
   },
   methods: {
     edit(e: any): void {
-      // if(e){
-        
-      // }
       this.isEditMode = !this.isEditMode;
       if (!this.isEditMode) {
         //@ts-ignore
