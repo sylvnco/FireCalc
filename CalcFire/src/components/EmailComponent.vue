@@ -48,15 +48,6 @@ export default defineComponent({
             }, 2000);
         }
     })
-  // fetch("https://formspree.io/f/meqvvvnb", requestOptions)
-  //   .then((response) => {
-  //       if(response){
-  //           that.show = true;
-  //           setTimeout(() => {
-  //               that.show = false;
-  //           }, 2000);
-  //       }
-  //   })
     },
   },
 });
