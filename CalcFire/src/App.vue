@@ -342,7 +342,7 @@ if (localStorage.getItem("sources")) {
     
   },
   methods: {
-    edit(e): void {
+    edit(e: any): void {
       // if(e){
         
       // }
@@ -353,7 +353,7 @@ if (localStorage.getItem("sources")) {
         localStorage.setItem("targetRent",  e.target.value);
       }
     },
-    editSwr(e): void {
+    editSwr(e: any): void {
       this.isEditSwrMode = !this.isEditSwrMode;
       if (!this.isEditSwrMode) {
         //@ts-ignore
@@ -361,7 +361,7 @@ if (localStorage.getItem("sources")) {
         localStorage.setItem("swr", e.target.value);
       }
     },
-     editInf(e): void {
+     editInf(e: any): void {
       this.editInflation = !this.editInflation;
       if (!this.editInflation) {
         //@ts-ignore
