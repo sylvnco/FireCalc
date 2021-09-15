@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <section class="text-gray-600 body-font">
       <div class="container px-5 py-8 md:py-24 mx-auto">
         <div class="flex flex-col text-center w-full mb-20">
@@ -125,6 +126,7 @@
         </div>
       </div>
     </section>
+    <email-component />
 
     <div>
       <income-source-list-component />
@@ -256,7 +258,6 @@
       </div>
     </div>
     <share-component />
-    <email-component />
     <footer-component />
   </div>
 </template>
@@ -285,6 +286,7 @@ export default defineComponent({
   data() {
     return {
       targetYear: 0,
+      startAge: 30,
       plan: [],
       ans: 0,
       isEditMode: false,
