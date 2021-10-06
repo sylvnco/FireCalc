@@ -9,7 +9,6 @@
       <span class="ml-3 text-xl">Fire Calculator</span>
     </a>
     <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">© 2021 Fire Calculator —
-      Made for <a target="_blank" href="https://www.millenial-independant.com">Le millenial indépendant</a> by
       <a href="https://twitter.com/sylvnco" class="text-gray-600 ml-1" rel="noopener noreferrer" target="_blank">@sylvnco</a>
     </p>
   </div>
