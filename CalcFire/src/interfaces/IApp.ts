@@ -4,6 +4,7 @@ export interface IApp {
     targetRent: number,
     plan: { index: number, value: number}[],
     ans: number,
+    displayMode: number,
     isEditMode: boolean,
     inflation: number,
     isInflationAdjusted: boolean,

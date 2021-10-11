@@ -215,7 +215,20 @@
           in {{ targetYear }} years.
         </p>
 
+
+    <div class="flex lg:w-1/2 my-4 w-full sm:flex-row flex-col mx-auto place-content-center">
+         <button @click="displayMode = 0" :class="{'text-green-500 border-b-2 font-medium border-green-500': displayMode === 0 }" class="text-gray-600 py-4 px-6 block hover:text-green-500 focus:outline-none">
+            Graph
+        </button>
+        <button @click="displayMode = 1" :class="{'text-green-500 border-b-2 font-medium border-green-500': displayMode === 1 }" class="text-gray-600 py-4 px-6 block hover:text-green-500 focus:outline-none">
+            Table
+        </button>
+    </div>
+    <div>
+      <graph-component class="lg:w-1/2
+            justify-items-center mx-auto" v-show="displayMode === 0" :amount="getAmounts" />
         <div
+          v-show="displayMode === 1"
           class="
             table
             w-8/12
@@ -259,6 +272,11 @@
             </div>
           </div>
         </div>
+      
+    </div>
+
+
+      
       </div>
     </div>
     <share-component />
@@ -268,9 +286,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import IncomeSourceListComponent from "./../components/IncomeSourceListComponent.vue";
-import currencyAmountComponent from "./../components/common/currencyAmountComponent.vue";
+import CurrencyAmountComponent from "./../components/common/currencyAmountComponent.vue";
+import GraphComponent from './../components/common/GraphComponent.vue';
 import ShareComponent from "./../components/ShareComponent.vue";
-import emailComponent from "./../components/EmailComponent.vue";
+import EmailComponent from "./../components/EmailComponent.vue";
 
 import { IApp } from "./../interfaces/IApp";
 
@@ -296,6 +315,7 @@ export default defineComponent({
       isInflationAdjusted: true,
       editInflation: false,
       isEditSwrMode: false,
+      displayMode: 0
     } as IApp;
   },
   mounted() {
@@ -439,12 +459,16 @@ export default defineComponent({
     getInflationRateLabel(): string {
       return `${this.inflation} %`;
     },
+    getAmounts(): number[] {
+      return this.plan.map(x => x.value);
+    },
   },
   components: {
     IncomeSourceListComponent,
-    currencyAmountComponent,
+    CurrencyAmountComponent,
     ShareComponent,
-    emailComponent,
+    EmailComponent,
+    GraphComponent
   },
 });
 </script>
