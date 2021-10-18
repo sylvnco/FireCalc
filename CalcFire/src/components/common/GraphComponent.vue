@@ -12,7 +12,7 @@ Chart.register(...registerables);
 export default defineComponent({
   name: "Chart",
   components: { LineChart },
-  props: ['amount'],
+  props: ['amount', "baseAmount"],
   setup(props) {
 
       const options = ref({
@@ -23,10 +23,14 @@ export default defineComponent({
       labels: [...Array(props.amount.length).keys()].map(x => "Year " + x++),
       datasets: [
         {
-            label: 'Savings',
-            data: props.amount,
-           borderColor: '#10B981',
-            backgroundColor: '#10B981',
+          label: 'Capital + Savings + Interest',
+          data: props.amount,
+          borderColor: '#10B981',
+        },
+        {
+            label: 'Capital + Savings',
+            data: props.baseAmount,
+           borderColor: '#3B82F6',
         },
       ],
     }));

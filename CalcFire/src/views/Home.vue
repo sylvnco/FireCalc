@@ -215,68 +215,159 @@
           in {{ targetYear }} years.
         </p>
 
-
-    <div class="flex lg:w-1/2 my-4 w-full sm:flex-row flex-col mx-auto place-content-center">
-         <button @click="displayMode = 0" :class="{'text-green-500 border-b-2 font-medium border-green-500': displayMode === 0 }" class="text-gray-600 py-4 px-6 block hover:text-green-500 focus:outline-none">
-            Graph
-        </button>
-        <button @click="displayMode = 1" :class="{'text-green-500 border-b-2 font-medium border-green-500': displayMode === 1 }" class="text-gray-600 py-4 px-6 block hover:text-green-500 focus:outline-none">
-            Table
-        </button>
-    </div>
-    <div>
-      <graph-component class="lg:w-1/2
-            justify-items-center mx-auto" v-show="displayMode === 0" :amount="getAmounts" />
         <div
-          v-show="displayMode === 1"
           class="
-            table
-            w-8/12
-            justify-items-center
+            flex
+            lg:w-1/2
+            my-4
+            w-full
+            sm:flex-row
+            flex-col
             mx-auto
-            text-green-800
-            font-semibold
+            place-content-center
           "
         >
-          <div class="table-row-group">
-            <div class="table-row">
-              <div
-                class="border-collapse border border-green-800 table-cell py-2"
-              >
-                Year
+          <button
+            @click="displayMode = 0"
+            :class="{
+              'text-green-500 border-b-2 font-medium border-green-500':
+                displayMode === 0,
+            }"
+            class="
+              text-gray-600
+              py-4
+              px-6
+              block
+              hover:text-green-500
+              focus:outline-none
+            "
+          >
+            Graph
+          </button>
+          <button
+            @click="displayMode = 1"
+            :class="{
+              'text-green-500 border-b-2 font-medium border-green-500':
+                displayMode === 1,
+            }"
+            class="
+              text-gray-600
+              py-4
+              px-6
+              block
+              hover:text-green-500
+              focus:outline-none
+            "
+          >
+            Table
+          </button>
+        </div>
+        <div>
+          <graph-component
+            class="lg:w-1/2 justify-items-center mx-auto"
+            v-show="displayMode === 0"
+            :amount="getAmounts"
+            :baseAmount="getBaseAmounts"
+          />
+          <div
+            v-show="displayMode === 1"
+            class="
+              table
+              w-8/12
+              justify-items-center
+              mx-auto
+              text-green-800
+              font-semibold
+            "
+          >
+            <div class="table-row-group">
+              <div class="table-row">
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  Year
+                </div>
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  Base capital + Savings
+                </div>
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  Interest
+                </div>
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  Total
+                </div>
               </div>
               <div
-                class="border-collapse border border-green-800 table-cell py-2"
+                class="table-row font-semibold text-white"
+                v-bind:class="[
+                  item.index % 2 == 0 ? 'bg-green-400' : 'bg-green-300',
+                ]"
+                v-for="item in plan"
+                :key="item.index"
               >
-                Savings
-              </div>
-            </div>
-            <div
-              class="table-row font-semibold text-white"
-              v-bind:class="[
-                item.index % 2 == 0 ? 'bg-green-400' : 'bg-green-300',
-              ]"
-              v-for="item in plan"
-              :key="item.index"
-            >
-              <div
-                class="border-collapse border border-green-800 table-cell py-2"
-              >
-                {{ item.index }}
-              </div>
-              <div
-                class="border-collapse border border-green-800 table-cell py-2"
-              >
-                <currency-amount-component :amount="item.value" />
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  {{ item.index }}
+                </div>
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  <currency-amount-component :amount="item.baseCapital" />
+                </div>
+
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  <currency-amount-component :amount="item.value - item.baseCapital" />
+                </div>
+                <div
+                  class="
+                    border-collapse border border-green-800
+                    table-cell
+                    py-2
+                  "
+                >
+                  <currency-amount-component :amount="item.value" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      
-    </div>
-
-
-      
       </div>
     </div>
     <share-component />
@@ -287,7 +378,7 @@
 import { defineComponent } from "vue";
 import IncomeSourceListComponent from "./../components/IncomeSourceListComponent.vue";
 import CurrencyAmountComponent from "./../components/common/currencyAmountComponent.vue";
-import GraphComponent from './../components/common/GraphComponent.vue';
+import GraphComponent from "./../components/common/GraphComponent.vue";
 import ShareComponent from "./../components/ShareComponent.vue";
 import EmailComponent from "./../components/EmailComponent.vue";
 
@@ -315,7 +406,7 @@ export default defineComponent({
       isInflationAdjusted: true,
       editInflation: false,
       isEditSwrMode: false,
-      displayMode: 0
+      displayMode: 0,
     } as IApp;
   },
   mounted() {
@@ -418,10 +509,15 @@ export default defineComponent({
       this.plan = [];
 
       for (let i: number = 0; i <= 99; i++) {
+        let initialAmount: number = 0;
+        let savingsAmount: number = 0;
+
         const values = store.state.sources.map((source: IIncomeSource) => {
           const tempSum = Math.round(
             this.calculate(i, source.savings, source.roi, source.initial)
           );
+          initialAmount += source.initial;
+          savingsAmount += Number(source.savings);
           return tempSum;
         });
         sum = values.reduce((acc: number, val: number) => {
@@ -431,6 +527,7 @@ export default defineComponent({
         this.plan.push({
           index: i,
           value: sum,
+          baseCapital: initialAmount + savingsAmount * 12 * i,
         });
 
         if (sum >= this.getTargetPatrimony) {
@@ -460,7 +557,10 @@ export default defineComponent({
       return `${this.inflation} %`;
     },
     getAmounts(): number[] {
-      return this.plan.map(x => x.value);
+      return this.plan.map((x) => x.value);
+    },
+    getBaseAmounts(): number[] {
+      return this.plan.map((x) => x.baseCapital);
     },
   },
   components: {
@@ -468,7 +568,7 @@ export default defineComponent({
     CurrencyAmountComponent,
     ShareComponent,
     EmailComponent,
-    GraphComponent
+    GraphComponent,
   },
 });
 </script>

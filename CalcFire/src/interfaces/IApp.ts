@@ -2,7 +2,7 @@ export interface IApp {
     startAge: number,
     targetYear: number,
     targetRent: number,
-    plan: { index: number, value: number}[],
+    plan: { index: number, value: number, baseCapital: number}[],
     ans: number,
     displayMode: number,
     isEditMode: boolean,
