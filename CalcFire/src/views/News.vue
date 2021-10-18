@@ -28,11 +28,6 @@
               to be able to save your plan
             </li>
             <li>
-              - <b class="text-green-500">[Improvement]</b> A graph for a better
-              visualization of your data
-              <b class="text-green-500">In progress</b>
-            </li>
-            <li>
               - <b class="text-green-500">[Bugfixes]</b> Apply inflation to the
               total savings
             </li>
