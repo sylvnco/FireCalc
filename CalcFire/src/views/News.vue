@@ -55,7 +55,19 @@
         </h2>
 
         <div class="text-left">
-          <b class="text-green-500">10/06/22</b>
+          <b class="text-green-500">10/18/22</b>
+          <ul>
+            <li>
+              - The graph is now drawing two lines. One with the total amount (base capital + savings + interest) and another one with only the base capital + savings.
+            </li>
+            <li>
+                 - The table displays these datas too.
+            </li>
+          </ul>
+        </div>
+        <hr class="mx-8 my-8" />
+        <div class="text-left">
+          <b class="text-green-500">10/12/22</b>
           <ul>
             <li>
               -You can now see the evolution of your savings on a simple graph

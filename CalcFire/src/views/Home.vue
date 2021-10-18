@@ -516,7 +516,7 @@ export default defineComponent({
           const tempSum = Math.round(
             this.calculate(i, source.savings, source.roi, source.initial)
           );
-          initialAmount += source.initial;
+          initialAmount += Number(source.initial);
           savingsAmount += Number(source.savings);
           return tempSum;
         });
